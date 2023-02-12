@@ -1,10 +1,22 @@
-// Import and require express
-const express = require("express");
+// npm i mysql2
+// npm i express
+// npm i inquirer@8.2.4
+// npm i
+
 // Import and require mysql2
 const mysql = require("mysql2");
 
+// Import and require inquierer version 8.2.4
+const inquirer = require("inquirer");
+
+// Import and require express
+const express = require("express");
+
+// requir("console.table"); -- do we need this? -- and what does it do?
+
 // Set portal directory
 const PORT = process.env.PORT || 3001;
+
 // Allow "app" to link to the express function
 const app = express();
 
@@ -13,118 +25,83 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.json());
 
 // Connect to database
-// // Remember to hide/change password! // //
+
 const db = mysql.createConnection(
   {
     host: "localhost",
-    // MySQL username,
     user: "root",
+
     // TODO: Add MySQL password here
-    password: "",
+    password: "abewd",
+
     database: "movies_db",
   },
-  console.log(`Connected to the movies_db database.`)
+  console.log(`
+  ███████╗███╗░░░███╗██████╗░██╗░░░░░░█████╗░██╗░░░██╗███████╗███████╗  
+  ██╔════╝████╗░████║██╔══██╗██║░░░░░██╔══██╗╚██╗░██╔╝██╔════╝██╔════╝  
+  █████╗░░██╔████╔██║██████╔╝██║░░░░░██║░░██║░╚████╔╝░█████╗░░█████╗░░  
+  ██╔══╝░░██║╚██╔╝██║██╔═══╝░██║░░░░░██║░░██║░░╚██╔╝░░██╔══╝░░██╔══╝░░  
+  ███████╗██║░╚═╝░██║██║░░░░░███████╗╚█████╔╝░░░██║░░░███████╗███████╗  
+  ╚══════╝╚═╝░░░░░╚═╝╚═╝░░░░░╚══════╝░╚════╝░░░░╚═╝░░░╚══════╝╚══════╝  
+  
+  ███╗░░░███╗░█████╗░███╗░░██╗░█████╗░░██████╗░███████╗██████╗░
+  ████╗░████║██╔══██╗████╗░██║██╔══██╗██╔════╝░██╔════╝██╔══██╗
+  ██╔████╔██║███████║██╔██╗██║███████║██║░░██╗░█████╗░░██████╔╝
+  ██║╚██╔╝██║██╔══██║██║╚████║██╔══██║██║░░╚██╗██╔══╝░░██╔══██╗
+  ██║░╚═╝░██║██║░░██║██║░╚███║██║░░██║╚██████╔╝███████╗██║░░██
+
+  Connected to the Employee Manager Database`),
+
+  // Run the app
+  questions()
 );
 
-// Create a movie
-app.post("/api/new-movie", ({ body }, res) => {
-  const sql = `INSERT INTO movies (movie_name)
-    VALUES (?)`;
-  const params = [body.movie_name];
-
-  db.query(sql, params, (err, result) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: "success",
-      data: body,
-    });
+function questions() {
+  inquirer.prompt({
+    type: "list",
+    name: "task",
+    message: "What would you like to do?",
+    choices: [
+      "View All Employees",
+      "Add Employee",
+      "Update Employee Role",
+      "View All Roles",
+      "Add Role",
+      "View All Departments",
+      "Add Department",
+      "End",
+    ],
   });
-});
+  then(function ({ task }) {
+    switch (task) {
+      case "View Employees":
+        viewEmployee();
+        break;
 
-// Read all movies
-app.get("/api/movies", (req, res) => {
-  const sql = `SELECT id, movie_name AS title FROM movies`;
+      case "View Employees by Department":
+        viewEmployeeByDepartment();
+        break;
 
-  db.query(sql, (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: "success",
-      data: rows,
-    });
-  });
-});
+      case "Add Employee":
+        addEmployee();
+        break;
 
-// Delete a movie
-app.delete("/api/movie/:id", (req, res) => {
-  const sql = `DELETE FROM movies WHERE id = ?`;
-  const params = [req.params.id];
+      case "Remove Employees":
+        removeEmployees();
+        break;
 
-  db.query(sql, params, (err, result) => {
-    if (err) {
-      res.statusMessage(400).json({ error: res.message });
-    } else if (!result.affectedRows) {
-      res.json({
-        message: "Movie not found",
-      });
-    } else {
-      res.json({
-        message: "deleted",
-        changes: result.affectedRows,
-        id: req.params.id,
-      });
+      case "Update Employee Role":
+        updateEmployeeRole();
+        break;
+
+      case "Add Role":
+        addRole();
+        break;
+
+      // This will close the inquirer prompt
+      case "End":
+        connection.end();
+        break;
     }
   });
-});
-
-// Read list of all reviews and associated movie name using LEFT JOIN
-app.get("/api/movie-reviews", (req, res) => {
-  const sql = `SELECT movies.movie_name AS movie, reviews.review FROM reviews LEFT JOIN movies ON reviews.movie_id = movies.id ORDER BY movies.movie_name;`;
-  db.query(sql, (err, rows) => {
-    if (err) {
-      res.status(500).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: "success",
-      data: rows,
-    });
-  });
-});
-
-// BONUS: Update review name
-app.put("/api/review/:id", (req, res) => {
-  const sql = `UPDATE reviews SET review = ? WHERE id = ?`;
-  const params = [req.body.review, req.params.id];
-
-  db.query(sql, params, (err, result) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-    } else if (!result.affectedRows) {
-      res.json({
-        message: "Movie not found",
-      });
-    } else {
-      res.json({
-        message: "success",
-        data: req.body,
-        changes: result.affectedRows,
-      });
-    }
-  });
-});
-
-// Display error message if PORT is not found
-app.use((req, res) => {
-  res.status(404).end();
-});
-
-// Allow the PORT to deploy
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+}
