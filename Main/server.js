@@ -125,7 +125,7 @@ function questions() {
 }
 
 function viewEmployee() {
-  // console.log("great success");
+  console.log("A list of all current employees:");
   db.query("SELECT * FROM employees", function (error, results) {
     if (error) throw error;
     console.table(results);
@@ -162,13 +162,39 @@ function addEmployee() {
     ])
     .then(function (res) {
       db.query(
-        "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?"
-      ),
-        [res.firstName, res.lastName, res.roleId, res.managerId],
+        `INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ("${res.firstName}", "${res.lastName}", ${res.roleId}, ${res.managerId})`,
         function (err, data) {
           if (err) throw err;
           console.table("Successfully added an employee!");
           questions();
-        };
+        }
+      );
+    });
+}
+
+function updateEmployeeRole() {
+  inquirer
+    .prompt([
+      {
+        message: "Which employee's role)id would you like to change?",
+        type: "input",
+        name: "name",
+      },
+
+      {
+        message: "Enter the new role_id",
+        type: "number",
+        name: "role_id",
+      },
+    ])
+    .then(function (res) {
+      db.query(
+        `UPDATE employee SET role_id = ${res.role_id} WHERE first_name = "${res.name}"`,
+        [res.role_id, res.name],
+        function (err, data) {
+          console.table(data);
+        }
+      );
+      questions();
     });
 }
