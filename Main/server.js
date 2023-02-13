@@ -125,10 +125,27 @@ function questions() {
 }
 
 function viewEmployee() {
-  console.log("great success");
-  db.query("SELECT * FROM employees", function (error, results, fields) {
+  // console.log("great success");
+  db.query("SELECT * FROM employees", function (error, results) {
     if (error) throw error;
     console.table(results);
     questions();
+  });
+}
+
+function addEmployee() {
+  const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
+      VALUES (?)`;
+  const params = [body.employees_name];
+
+  db.query(sql, params, (err, result) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: "success",
+      data: body,
+    });
   });
 }
