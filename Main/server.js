@@ -124,13 +124,10 @@ function questions() {
     });
 }
 
-function viewAllEmployees() {
-  connection.query(
-    "SELECT * FROM employees",
-    function (error, results, fields) {
-      if (error) throw error;
-      console.log("Results: ", results);
-      questions();
-    }
-  );
+function viewEmployee() {
+  db.query("SELECT * FROM employees", function (error, results, fields) {
+    if (error) throw error;
+    console.log("Results: ", results);
+    questions();
+  });
 }
