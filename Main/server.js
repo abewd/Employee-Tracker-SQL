@@ -34,7 +34,7 @@ const db = mysql.createConnection(
     // TODO: Add MySQL password here
     password: "abewd",
 
-    database: "movies_db",
+    database: "employeesDB",
   },
   console.log(`
   ███████╗███╗░░░███╗██████╗░██╗░░░░░░█████╗░██╗░░░██╗███████╗███████╗  
@@ -82,7 +82,7 @@ function questions() {
     .then(function ({ task }) {
       switch (task) {
         // Creating a function which displays the employees in the table
-        case "View Employees":
+        case "View All Employees":
           viewEmployee();
           break;
 
@@ -125,9 +125,10 @@ function questions() {
 }
 
 function viewEmployee() {
+  console.log("great success");
   db.query("SELECT * FROM employees", function (error, results, fields) {
     if (error) throw error;
-    console.log("Results: ", results);
+    console.table(results);
     questions();
   });
 }
