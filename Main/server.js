@@ -134,18 +134,41 @@ function viewEmployee() {
 }
 
 function addEmployee() {
-  const sql = `INSERT INTO employees (first_name, last_name, role_id, manager_id)
-      VALUES (?)`;
-  const params = [body.employees_name];
+  inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "firstName",
+        message: "What is the employees first name?",
+      },
 
-  db.query(sql, params, (err, result) => {
-    if (err) {
-      res.status(400).json({ error: err.message });
-      return;
-    }
-    res.json({
-      message: "success",
-      data: body,
+      {
+        type: "input",
+        name: "lastName",
+        message: "What is the employees surname?",
+      },
+
+      {
+        type: "number",
+        name: "roleId",
+        message: "What is the employees role_id",
+      },
+
+      {
+        type: "number",
+        name: "managerId",
+        message: "What is th eemployees manager_id",
+      },
+    ])
+    .then(function (res) {
+      db.query(
+        "INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES (?,?,?,?"
+      ),
+        [res.firstName, res.lastName, res.roleId, res.managerId],
+        function (err, data) {
+          if (err) throw err;
+          console.table("Successfully added an employee!");
+          questions();
+        };
     });
-  });
 }
