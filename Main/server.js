@@ -124,9 +124,13 @@ function questions() {
     });
 }
 
-function viewEmployee() {
-  console.log("Viewing all employees\n");
-
-  // Run the prompt
-  viewEmployee();
+function viewAllEmployees() {
+  connection.query(
+    "SELECT * FROM employees",
+    function (error, results, fields) {
+      if (error) throw error;
+      console.log("Results: ", results);
+      questions();
+    }
+  );
 }
