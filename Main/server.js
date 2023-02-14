@@ -116,11 +116,13 @@ function questions() {
           addDepartment();
           break;
 
-        // Add a delete employee
+        // Bonus: update employee manager
 
-        // Remove department
+        // View Employees By Manager
 
-        // Remove role
+        // Delete departments, roles and employees
+
+        // View the total utilsed budget of a department
 
         // This will close the inquirer prompt
         case "End":
@@ -130,13 +132,17 @@ function questions() {
     });
 }
 
+// creating a virtusl table called manager so that we dont reuse employee table again for our other join
 function viewEmployee() {
   console.log("A list of all current employees:");
-  db.query("SELECT * FROM employees", function (error, results) {
-    if (error) throw error;
-    console.table(results);
-    questions();
-  });
+  db.query(
+    "SELECT company.first_name, company.last_name, company.title, company.salary, manager.first_name AS manager_first, manager.last_name AS manager_last FROM (SELECT employees.first_name, employees.last_name, employees.manager_id, roles.title, roles.salary FROM employees LEFT JOIN roles ON employees.role_id=roles.id) AS company LEFT JOIN employees as manager ON company.manager_id=manager.id",
+    function (error, results) {
+      if (error) throw error;
+      console.table(results);
+      questions();
+    }
+  );
 }
 
 function addEmployee() {
@@ -213,11 +219,14 @@ function updateEmployeeRole() {
 
 function viewRoles() {
   console.log("A list of all current roles:");
-  db.query("SELECT * FROM roles", function (error, results) {
-    if (error) throw error;
-    console.table(results);
-    questions();
-  });
+  db.query(
+    "SELECT roles.id, roles.title, roles.salary, department.name FROM roles LEFT JOIN department ON roles.department_id=department.id",
+    function (error, results) {
+      if (error) throw error;
+      console.table(results);
+      questions();
+    }
+  );
 }
 
 function addRoles() {
@@ -256,15 +265,6 @@ function addRoles() {
 function viewDepartments() {
   console.log("A list of all current departments:");
   db.query("SELECT * FROM department", function (error, results) {
-    if (error) throw error;
-    console.table(results);
-    questions();
-  });
-}
-
-function viewRoles() {
-  console.log("A list of all current roles:");
-  db.query("SELECT * FROM roles", function (error, results) {
     if (error) throw error;
     console.table(results);
     questions();
