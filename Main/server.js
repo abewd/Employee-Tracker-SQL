@@ -112,7 +112,7 @@ function questions() {
           break;
 
         // Creating a function which adds a department to the table
-        case "Add Role":
+        case "Add Department":
           addDepartment();
           break;
 
@@ -247,6 +247,45 @@ function addRoles() {
       db.query(
         `INSERT INTO roles (title, salary, department_id) VALUES ("${res.title}", ${res.salary}, ${res.department_id})`,
         [res.title, res.salary, res.department_id],
+        function (err, data) {}
+      );
+      questions();
+    });
+}
+
+function viewDepartments() {
+  console.log("A list of all current departments:");
+  db.query("SELECT * FROM department", function (error, results) {
+    if (error) throw error;
+    console.table(results);
+    questions();
+  });
+}
+
+function viewRoles() {
+  console.log("A list of all current roles:");
+  db.query("SELECT * FROM roles", function (error, results) {
+    if (error) throw error;
+    console.table(results);
+    questions();
+  });
+}
+
+function addDepartment() {
+  inquirer
+    .prompt([
+      {
+        message: "What is the name of the department?",
+        type: "input",
+        name: "name",
+      },
+    ])
+    .then(function (res) {
+      console.log(res.name);
+
+      db.query(
+        `INSERT INTO department (name) VALUES ("${res.name}")`,
+        [res.name],
         function (err, data) {}
       );
       questions();
