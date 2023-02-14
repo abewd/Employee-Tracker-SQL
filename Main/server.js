@@ -107,7 +107,7 @@ function questions() {
           break;
 
         // Creating a function which displays All Departments
-        case "View All Roles":
+        case "View All Departments":
           viewDepartments();
           break;
 
@@ -115,6 +115,12 @@ function questions() {
         case "Add Role":
           addDepartment();
           break;
+
+        // Add a delete employee
+
+        // Remove department
+
+        // Remove role
 
         // This will close the inquirer prompt
         case "End":
@@ -176,9 +182,10 @@ function updateEmployeeRole() {
   inquirer
     .prompt([
       {
-        message: "Which employee's role)id would you like to change?",
+        message:
+          "Which employee's role_id would you like to change? Input their employee id",
         type: "input",
-        name: "name",
+        name: "id",
       },
 
       {
@@ -188,13 +195,29 @@ function updateEmployeeRole() {
       },
     ])
     .then(function (res) {
+      console.log(res.role_id);
+      console.log(res.id);
+
       db.query(
-        `UPDATE employee SET role_id = ${res.role_id} WHERE first_name = "${res.name}"`,
-        [res.role_id, res.name],
+        // `UPDATE employee SET role_id = ${res.role_id} WHERE id = "${res.id}"`,
+        `UPDATE employees set role_id = ? where id = ?`,
+        [res.role_id, res.id],
+        // [res.role_id, res.name],
         function (err, data) {
-          console.table(data);
+          // console.table(data);
         }
       );
       questions();
     });
 }
+
+function viewRoles() {
+  console.log("A list of all current roles:");
+  db.query("SELECT * FROM roles", function (error, results) {
+    if (error) throw error;
+    console.table(results);
+    questions();
+  });
+}
+
+// link employee table to role table
