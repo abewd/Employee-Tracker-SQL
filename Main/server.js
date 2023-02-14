@@ -72,7 +72,7 @@ function questions() {
         "Add Employee",
         "Update Employee Role",
         "View All Roles",
-        "Add Role",
+        "Add Roles",
         "View All Departments",
         "Add Department",
         "End",
@@ -102,8 +102,8 @@ function questions() {
           break;
 
         // Creating a function which adds a role to the table
-        case "Add Role":
-          addRole();
+        case "Add Roles":
+          addRoles();
           break;
 
         // Creating a function which displays All Departments
@@ -218,6 +218,39 @@ function viewRoles() {
     console.table(results);
     questions();
   });
+}
+
+function addRoles() {
+  inquirer
+    .prompt([
+      {
+        message: "What is the role position?",
+        type: "input",
+        name: "title",
+      },
+      {
+        message: "What is the salary for this role?",
+        type: "number",
+        name: "salary",
+      },
+      {
+        type: "number",
+        name: "department_id",
+        message: "What is the number for this department? (INT)",
+      },
+    ])
+    .then(function (res) {
+      console.log(res.title);
+      console.log(res.salary);
+      console.log(res.department_id);
+
+      db.query(
+        `INSERT INTO roles (title, salary, department_id) VALUES ("${res.title}", ${res.salary}, ${res.department_id})`,
+        [res.title, res.salary, res.department_id],
+        function (err, data) {}
+      );
+      questions();
+    });
 }
 
 // link employee table to role table
