@@ -425,6 +425,14 @@ function deleteDepartment() {
     });
 }
 
-function departmentBudget() {}
-
-// delete form employees where id = ?
+function departmentBudget() {
+  console.log("Displaying the expenditure for the department:");
+  db.query(
+    "SELECT department_id, department.name, SUM(role.salary) AS budget FROM employee LEFT JOIN role on employee.role_id = role_id LEFT JOIN department on role.department_id = department.id GROUP BY department.id, department.name;",
+    function (error, results) {
+      if (error) throw error;
+      console.table(results);
+      questions();
+    }
+  );
+}
