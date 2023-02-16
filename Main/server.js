@@ -69,6 +69,7 @@ function questions() {
       message: "What would you like to do?",
       choices: [
         "View All Employees",
+        "Update Employee Manager",
         "Add Employee",
         "Update Employee Role",
         "View All Roles",
@@ -116,13 +117,21 @@ function questions() {
           addDepartment();
           break;
 
-        // Bonus: update employee manager
+        // Creating a function which updates the employees manager
+        case "Update Employee Manager":
+          updateEmployeeManager();
+          break;
 
         // View Employees By Manager
 
-        // Delete departments, roles and employees
+        // Creating a function which deletes employees
+
+        // Creating a function which deletes roles
+
+        // Creating a function which deletes departments
 
         // View the total utilsed budget of a department
+        // join employees, roles and department
 
         // This will close the inquirer prompt
         case "End":
@@ -292,4 +301,31 @@ function addDepartment() {
     });
 }
 
-// link employee table to role table
+function updateEmployeeManager() {
+  inquirer
+    .prompt([
+      {
+        message:
+          "Which employee's manager would you like to change? Input their employee id",
+        type: "input",
+        name: "id",
+      },
+
+      {
+        message: "Enter the new manager_id",
+        type: "number",
+        name: "manager_id",
+      },
+    ])
+    .then(function (res) {
+      console.log(res.manager_id);
+      console.log(res.id);
+
+      db.query(
+        `UPDATE employees set manager_id = ? where id = ?`,
+        [res.manager_id, res.id],
+        function (err, data) {}
+      );
+      questions();
+    });
+}
