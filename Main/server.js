@@ -70,13 +70,17 @@ function questions() {
       choices: [
         "View All Employees",
         "Update Employee Manager",
+        "Delete An Employee",
         "View Employee By Manager",
         "Add Employee",
         "Update Employee Role",
         "View All Roles",
+        "Delete A Role",
         "Add Roles",
         "View All Departments",
+        "Delete A Department",
         "Add Department",
+        "Total Budget Of A Department",
         "End",
       ],
     })
@@ -130,14 +134,23 @@ function questions() {
           break;
 
         // Creating a function which deletes employees
-
+        case "Delete An Employee":
+          deleteEmployee();
+          break;
         // Creating a function which deletes roles
-
+        case "Delete A Role":
+          deleteRole();
+          break;
         // Creating a function which deletes departments
+        case "Delete A Department":
+          deleteDepartment();
+          break;
 
         // View the total utilsed budget of a department
         // join employees, roles and department
-
+        case "Total Budget Of A Department":
+          departmentBudget();
+          break;
         // This will close the inquirer prompt
         case "End":
           connection.end();
@@ -341,7 +354,77 @@ function viewByManager() {
         name: "manager_id",
       },
     ])
-    .then(function (res) {
-      db.query(``);
+    .then(function (res, data) {
+      db.query(
+        "SELECT first_name, last_name, role_id FROM employees WHERE manager_id = ?",
+        [res.manager_id],
+        function (err, data) {
+          console.table(data);
+        }
+      );
+      questions();
     });
 }
+
+function deleteEmployee() {
+  inquirer
+    .prompt({
+      message: "What employee would you like to delete? Input their ID",
+      type: "input",
+      name: "id",
+    })
+    .then((answer) => {
+      db.query(
+        "DELETE FROM employees WHERE id = ?",
+        [answer.id],
+        (err, res) => {
+          if (err) throw err;
+          console.log(res.affectedRows + " employee deleted.\n");
+          // Call a function to display the updated employee list
+          questions();
+        }
+      );
+    });
+}
+
+function deleteRole() {
+  inquirer
+    .prompt({
+      message: "What role would you like to delete? Input the ID",
+      type: "input",
+      name: "id",
+    })
+    .then((answer) => {
+      db.query("DELETE FROM roles WHERE id = ?", [answer.id], (err, res) => {
+        if (err) throw err;
+        console.log(res.affectedRows + " roles deleted.\n");
+        // Call a function to display the updated role list
+        questions();
+      });
+    });
+}
+
+function deleteDepartment() {
+  inquirer
+    .prompt({
+      message: "What department would you like to delete? Input the ID",
+      type: "input",
+      name: "id",
+    })
+    .then((answer) => {
+      db.query(
+        "DELETE FROM department WHERE id = ?",
+        [answer.id],
+        (err, res) => {
+          if (err) throw err;
+          console.log(res.affectedRows + " department deleted.\n");
+          // Call a function to display the updated department list
+          questions();
+        }
+      );
+    });
+}
+
+function departmentBudget() {}
+
+// delete form employees where id = ?
