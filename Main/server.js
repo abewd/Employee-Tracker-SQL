@@ -70,6 +70,7 @@ function questions() {
       choices: [
         "View All Employees",
         "Update Employee Manager",
+        "View Employee By Manager",
         "Add Employee",
         "Update Employee Role",
         "View All Roles",
@@ -123,6 +124,10 @@ function questions() {
           break;
 
         // View Employees By Manager
+
+        case "View Employee By Manager":
+          viewByManager();
+          break;
 
         // Creating a function which deletes employees
 
@@ -214,13 +219,9 @@ function updateEmployeeRole() {
       console.log(res.id);
 
       db.query(
-        // `UPDATE employee SET role_id = ${res.role_id} WHERE id = "${res.id}"`,
         `UPDATE employees set role_id = ? where id = ?`,
         [res.role_id, res.id],
-        // [res.role_id, res.name],
-        function (err, data) {
-          // console.table(data);
-        }
+        function (err, data) {}
       );
       questions();
     });
@@ -327,5 +328,20 @@ function updateEmployeeManager() {
         function (err, data) {}
       );
       questions();
+    });
+}
+
+function viewByManager() {
+  inquirer
+    .prompt([
+      {
+        Message:
+          "Which managers team would you like to view? Input their manager_id",
+        type: "number",
+        name: "manager_id",
+      },
+    ])
+    .then(function (res) {
+      db.query(``);
     });
 }
