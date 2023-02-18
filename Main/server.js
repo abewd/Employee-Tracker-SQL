@@ -163,7 +163,7 @@ function questions() {
 function viewEmployee() {
   console.log("A list of all current employees:");
   db.query(
-    "SELECT company.id, company.first_name ,company.last_name, company.title, company.salary, manager.first_name AS manager_first, manager.last_name AS manager_last FROM (SELECT employees.id ,employees.first_name, employees.last_name, employees.manager_id, roles.title, roles.salary, roles_id FROM employees LEFT JOIN roles ON employees.role_id=roles.roles_id) AS company LEFT JOIN employees as manager ON company.manager_id=manager.id",
+    "SELECT company.id, company.first_name ,company.last_name, company.title, company.salary, manager.first_name AS manager_first, manager.last_name AS manager_last FROM (SELECT employees.id ,employees.first_name, employees.last_name, employees.manager_id, roles.title, roles.salary, roles_id FROM employees LEFT JOIN roles ON employees.role_id=roles.roles_id) AS company LEFT JOIN employees AS manager ON company.manager_id=manager.id ",
     function (error, results) {
       if (error) throw error;
       console.table(results);
@@ -243,7 +243,7 @@ function updateEmployeeRole() {
 function viewRoles() {
   console.log("A list of all current roles:");
   db.query(
-    "SELECT roles.id, roles.title, roles.salary, department.name FROM roles LEFT JOIN department ON roles.department_id=department.id",
+    "SELECT roles_id, roles.title, roles.salary, department.name FROM roles LEFT JOIN department ON roles.department_id=department.id",
     function (error, results) {
       if (error) throw error;
       console.table(results);
@@ -395,12 +395,16 @@ function deleteRole() {
       name: "id",
     })
     .then((answer) => {
-      db.query("DELETE FROM roles WHERE id = ?", [answer.id], (err, res) => {
-        if (err) throw err;
-        console.log(res.affectedRows + " roles deleted.\n");
-        // Call a function to display the updated role list
-        questions();
-      });
+      db.query(
+        "DELETE FROM roles WHERE roles_id = ?",
+        [answer.id],
+        (err, res) => {
+          if (err) throw err;
+          console.log(res.affectedRows + " roles deleted.\n");
+          // Call a function to display the updated role list
+          questions();
+        }
+      );
     });
 }
 
