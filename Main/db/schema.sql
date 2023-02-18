@@ -12,7 +12,7 @@ CREATE TABLE department (
 );
 
 CREATE TABLE roles (
-  id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+  roles_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
   title VARCHAR(50),
   salary INT NOT NULL,
   department_id INT NOT NULL,
@@ -25,6 +25,6 @@ CREATE TABLE employees (
   last_name VARCHAR(50) NOT NULL,
   role_id INT NOT NULL, 
   manager_id INT, 
-  FOREIGN KEY (role_id) references roles (id) ON DELETE CASCADE,
+  FOREIGN KEY (role_id) references roles (roles_id) ON DELETE CASCADE,
   FOREIGN KEY (manager_id) references employees (id) ON DELETE CASCADE
 );

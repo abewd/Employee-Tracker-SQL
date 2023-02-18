@@ -9,16 +9,16 @@ VALUES ("Finance");
 INSERT INTO department (name)
 VALUES ("Legal");
 
-INSERT INTO roles (title, salary, department_id)
-VALUES ("Sales Lead", 100000, 1);
-INSERT INTO roles (title, salary, department_id)
-VALUES ("Lead Engineer", 150000, 2);
-INSERT INTO roles (title, salary, department_id)
-VALUES ("Software Engineer", 120000, 2);
-INSERT INTO roles (title, salary, department_id)
-VALUES ("Accountant", 125000, 3);
-INSERT INTO roles (title, salary, department_id)
-VALUES ("Legal Team Lead", 250000, 4);
+INSERT INTO roles (roles_id, title, salary, department_id)
+VALUES (1, "Sales Lead", 100000, 1);
+INSERT INTO roles (roles_id, title, salary, department_id)
+VALUES (2, "Lead Engineer", 150000, 2);
+INSERT INTO roles (roles_id, title, salary, department_id)
+VALUES (3, "Software Engineer", 120000, 2);
+INSERT INTO roles (roles_id, title, salary, department_id)
+VALUES (4, "Accountant", 125000, 3);
+INSERT INTO roles (roles_id, title, salary, department_id)
+VALUES (5, "Legal Team Lead", 250000, 4);
 
 INSERT INTO employees (first_name, last_name, role_id, manager_id)
 VALUES ("Jane", "Doe", 1, null);
